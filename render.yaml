@@ -3,7 +3,7 @@ services:
     name: youtube-transcript-app
     runtime: python
     buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn --chdir backend app:app
+    startCommand: gunicorn wsgi:app
     plan: free
     envVars:
       - key: PYTHON_VERSION
