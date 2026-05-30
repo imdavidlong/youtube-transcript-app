@@ -1,8 +1,8 @@
 (function () {
   'use strict';
 
-  var API_URL       = 'http://localhost:5000/api/transcript';
-  var TRANSLATE_URL = 'http://localhost:5000/api/translate';
+  var API_URL       = '/api/transcript';
+  var TRANSLATE_URL = '/api/translate';
 
   var CACHE_KEY   = 'yt_transcript_history';
   var MAX_HISTORY = 5;
