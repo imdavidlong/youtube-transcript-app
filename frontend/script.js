@@ -24,6 +24,13 @@
       errEmpty:       '请输入 YouTube 视频链接。',
       errNetwork:     '网络错误，无法连接到服务器。请确认 backend 已启动（python backend/app.py）。',
       errTransNet:    '翻译网络错误，无法连接到服务器。',
+      errHttp:        'HTTP {status}：请求失败。',
+      errServer:      '服务器暂时无法处理请求，请稍后再试。',
+      errInvalidUrl:  '无法识别这个 YouTube 链接，请检查后重试。',
+      errVideoUnavailable: '视频不可用，可能是私密、下架或有地区限制。',
+      errTranscriptNotFound: '该视频没有可用字幕，或字幕功能已关闭。',
+      errTranslate:   '翻译失败，请稍后再试。',
+      errYoutubeBlocked: 'YouTube 拦截了当前服务器的请求。Render 等云服务器 IP 经常会被 YouTube 限制，需要配置代理或更换运行环境。',
       noTranscript:   '暂无字幕内容。',
       historyLabel:   '最近记录',
       historyClear:   '清除',
@@ -44,6 +51,13 @@
       errEmpty:       'Please enter a YouTube video URL.',
       errNetwork:     'Network error. Please make sure the backend is running (python backend/app.py).',
       errTransNet:    'Translation network error. Cannot connect to server.',
+      errHttp:        'HTTP {status}: request failed.',
+      errServer:      'The server could not process the request. Please try again later.',
+      errInvalidUrl:  'This does not look like a supported YouTube URL. Please check it and try again.',
+      errVideoUnavailable: 'This video is unavailable. It may be private, removed, or region restricted.',
+      errTranscriptNotFound: 'No transcript is available for this video, or captions are disabled.',
+      errTranslate:   'Translation failed. Please try again later.',
+      errYoutubeBlocked: 'YouTube blocked requests from this server. Cloud hosts such as Render are often restricted by YouTube, so this needs a proxy or a different runtime environment.',
       noTranscript:   'No transcript content.',
       historyLabel:   'Recent',
       historyClear:   'Clear',
@@ -51,10 +65,37 @@
     }
   };
 
-  var currentLang = 'zh';
+  var currentLang = 'en';
 
   function t(key) {
-    return (I18N[currentLang] && I18N[currentLang][key]) || I18N['zh'][key] || key;
+    return (I18N[currentLang] && I18N[currentLang][key]) || I18N.en[key] || key;
+  }
+
+  function formatText(template, values) {
+    return template.replace(/\{(\w+)\}/g, function (_, key) {
+      return values && values[key] !== undefined ? values[key] : '';
+    });
+  }
+
+  function getErrorKey(code, message) {
+    if (message && message.indexOf('YouTube is blocking requests from your IP') !== -1) {
+      return 'errYoutubeBlocked';
+    }
+
+    var byCode = {
+      INVALID_URL: 'errInvalidUrl',
+      VIDEO_UNAVAILABLE: 'errVideoUnavailable',
+      TRANSCRIPT_NOT_FOUND: 'errTranscriptNotFound',
+      TRANSLATE_ERROR: 'errTranslate',
+      INTERNAL_ERROR: 'errServer'
+    };
+
+    return byCode[code] || null;
+  }
+
+  function updateLangSwitcherLabel() {
+    var label = document.getElementById('lang-switcher-label');
+    if (label) label.textContent = currentLang === 'en' ? '中文' : 'EN';
   }
 
   function applyI18n() {
@@ -66,16 +107,15 @@
     });
     document.documentElement.lang = currentLang === 'zh' ? 'zh-CN' : 'en';
     document.title = currentLang === 'zh' ? 'YouTube 字幕下载' : 'YouTube Transcript DL';
+    updateLangSwitcherLabel();
     // Re-render history labels
     renderHistory();
   }
 
   function initLangSwitcher() {
     var btn   = document.getElementById('lang-switcher');
-    var label = document.getElementById('lang-switcher-label');
     btn.addEventListener('click', function () {
       currentLang       = currentLang === 'zh' ? 'en' : 'zh';
-      label.textContent = currentLang === 'zh' ? 'EN' : '中';
       applyI18n();
     });
   }
@@ -110,10 +150,10 @@
   function hide(el) { el.classList.add('hidden'); }
 
   function extractErrorMsg(data, status) {
-    if (data && data.error && data.error.message) return data.error.message;
-    if (data && data.error && data.error.code)    return data.error.code;
-    if (data && data.message)                     return data.message;
-    return 'HTTP ' + status + '：请求失败。';
+    var error = data && data.error ? data.error : {};
+    var key = getErrorKey(error.code, error.message || data && data.message);
+    if (key) return t(key);
+    return formatText(t('errHttp'), { status: status || '?' });
   }
 
   function setLoading(active) {
@@ -262,7 +302,10 @@
     var dot2 = document.createElement('span');
     dot2.className = 'badge-dot';
     autoBadge.appendChild(dot2);
-    autoBadge.appendChild(document.createTextNode(isAuto ? '自动生成字幕' : '人工字幕'));
+    var captionType = isAuto
+      ? (currentLang === 'zh' ? '自动生成字幕' : 'Auto-generated captions')
+      : (currentLang === 'zh' ? '人工字幕' : 'Manual captions');
+    autoBadge.appendChild(document.createTextNode(captionType));
     langInfo.appendChild(autoBadge);
   }
 

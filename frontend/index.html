@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>YouTube 字幕下载</title>
+  <title>YouTube Transcript DL</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -11,7 +11,7 @@
 
   <div class="lang-switcher-bar">
     <button id="lang-switcher" class="lang-switcher-btn">
-      <span id="lang-switcher-label">EN</span>
+      <span id="lang-switcher-label">中文</span>
     </button>
   </div>
 
@@ -21,12 +21,12 @@
         <span class="logo-icon">&#9654;</span>
         <span class="logo-text">Transcript<span class="logo-accent">DL</span></span>
       </div>
-      <p class="subtitle" data-i18n="subtitle">YouTube 字幕一键下载</p>
+      <p class="subtitle" data-i18n="subtitle">One-click YouTube Transcript Download</p>
     </header>
 
     <main>
       <div class="input-card">
-        <label for="url-input" class="input-label" data-i18n="urlLabel">YouTube 视频链接</label>
+        <label for="url-input" class="input-label" data-i18n="urlLabel">YouTube Video URL</label>
         <div class="input-row">
           <input
             id="url-input"
@@ -36,21 +36,21 @@
             spellcheck="false"
             data-i18n-placeholder="urlPlaceholder"
           />
-          <button id="fetch-btn" data-i18n="fetchBtn">获取字幕</button>
+          <button id="fetch-btn" data-i18n="fetchBtn">Get Transcript</button>
         </div>
       </div>
 
       <div id="history-section" class="hidden">
         <div class="history-header">
-          <span class="history-title" data-i18n="historyLabel">最近记录</span>
-          <button id="history-clear-btn" class="history-clear-btn" data-i18n="historyClear">清除</button>
+          <span class="history-title" data-i18n="historyLabel">Recent</span>
+          <button id="history-clear-btn" class="history-clear-btn" data-i18n="historyClear">Clear</button>
         </div>
         <div id="history-list"></div>
       </div>
 
       <div id="loading" class="hidden">
         <div class="spinner"></div>
-        <span data-i18n="loading">正在获取字幕，请稍候…</span>
+        <span data-i18n="loading">Fetching transcript, please wait...</span>
       </div>
 
       <div id="error-msg" class="hidden">
@@ -64,17 +64,17 @@
           <div class="translate-controls">
             <label class="toggle-label">
               <input type="checkbox" id="translate-toggle">
-              <span data-i18n="translateLabel">翻译</span>
+              <span data-i18n="translateLabel">Translate</span>
             </label>
             <select id="lang-select" class="hidden">
-              <option value="zh-CN" data-i18n="langZh">中文</option>
+              <option value="zh-CN" data-i18n="langZh">Chinese</option>
             </select>
-            <button id="translate-btn" class="hidden translate-btn" data-i18n="translateBtn">翻译</button>
-            <span id="translate-loading" class="hidden" data-i18n="translating">翻译中…</span>
+            <button id="translate-btn" class="hidden translate-btn" data-i18n="translateBtn">Translate</button>
+            <span id="translate-loading" class="hidden" data-i18n="translating">Translating...</span>
           </div>
           <button id="download-btn" class="download-btn">
             <span class="dl-icon">&#8681;</span>
-            <span data-i18n="downloadBtn">下载 transcript.txt</span>
+            <span data-i18n="downloadBtn">Download transcript.txt</span>
           </button>
         </div>
         <div id="translate-progress-wrap" class="hidden">
@@ -85,7 +85,7 @@
     </main>
 
     <footer>
-      <p data-i18n="footer">仅供学习使用 &mdash; 请遵守 YouTube 服务条款</p>
+      <p data-i18n="footer">For educational use only &mdash; Please comply with YouTube Terms of Service</p>
     </footer>
   </div>
 
